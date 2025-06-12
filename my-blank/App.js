@@ -21,7 +21,7 @@ export default function App() {
       <Texto contenido = "React Native"></Texto>
       <StatusBar style="auto" />
     </View>
-  );w
+  );
 }
 
 /* Zona 3: Estética*/
