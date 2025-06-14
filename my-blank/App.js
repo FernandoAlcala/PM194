@@ -4,11 +4,11 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import React,{useState} from 'react';
 
-const Texto = () => {
+const Texto = ({style}) => {
   const [contenido,setContenido] = useState('Hola Mundo React Native');
   const actualizarTexto = () => {setContenido('Estado actualizado del text');}
   return (
-    <Text onPress={actualizarTexto}> {contenido} </Text>
+    <Text style={[styles.text,style]} onPress={actualizarTexto}> {contenido} </Text>
   );
 }
 
@@ -25,11 +25,9 @@ const Botonazo = () => {
 export default function App() {
   return (
     <View style={styles.container}>
-      <Button title='Presioname'></Button>
-      <Botonazo></Botonazo>
-      <Texto></Texto>
-      <Texto></Texto>
-      <Texto></Texto>
+      <Texto style={[styles.red]}></Texto>
+      <Texto style={[styles.blue]}></Texto>
+      <Texto style={[styles.green]}></Texto>
       <StatusBar style="auto" />
     </View>
   );
@@ -40,7 +38,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'baseline',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
   },
+  text:{
+    color:'black',
+    fontSize: 27,
+    fontFamily: 'Comic Sans MS',
+    /* Estas distancias no son en pixeles, son distancias relativas*/
+    /*height: 100,
+    width: 300,*/
+    textAlign: 'center',
+  },
+  // El flex ocupa todo lo que ocupa de la pantalla
+  // En este caso rojo ocupa 1/6, azul 2/6 y verde 3/6
+  // El orden de los estilos es importante, el último estilo es el que prevalece
+  // Si no se especifica el flex, ocupa todo el espacio disponible
+  red:{backgroundColor: 'red',},
+  blue:{backgroundColor: 'blue',},
+  green:{backgroundColor: 'green',},
 });
