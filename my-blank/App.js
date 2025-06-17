@@ -1,7 +1,7 @@
 /* Zona 1: Importaciones*/
 
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
 import React,{useState} from 'react';
 
 const Texto = ({style}) => {
@@ -21,17 +21,41 @@ const Botonazo = () => {
 }
 
 /* Zona 2: Main*/
-
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Texto style={[styles.red]}></Texto>
-      <Texto style={[styles.blue]}></Texto>
-      <Texto style={[styles.green]}></Texto>
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
+      <Texto style={styles.red} />
+      <Texto style={styles.blue} />
+      <Texto style={styles.green} />
+      <Texto style={styles.red} />
+      <Texto style={styles.blue} />
+      <Texto style={styles.green} />
+      <Texto style={styles.red} />
+      <Texto style={styles.blue} />
+      <Texto style={styles.green} />
+      <Texto style={styles.red} />
+      <Texto style={styles.blue} />
+      <Texto style={styles.green} />
+      <Texto style={styles.red} />
+      <Texto style={styles.blue} />
+      <Texto style={styles.green} />
+      <Texto style={styles.red} />
+      <Texto style={styles.blue} />
+      <Texto style={styles.green} />
+      <Texto style={styles.red} />
+      <Texto style={styles.blue} />
+      <Texto style={styles.green} />
+      <Texto style={styles.red} />
+      <Texto style={styles.blue} />
+      <Texto style={styles.green} />
+      <Texto style={styles.red} />
+      <Texto style={styles.blue} />
+      <Texto style={styles.green} />
+      <Botonazo />
       <StatusBar style="auto" />
-    </View>
+    </ScrollView>
   );
-};
+}
 
 /* Zona 3: Estética*/
 const styles = StyleSheet.create({
