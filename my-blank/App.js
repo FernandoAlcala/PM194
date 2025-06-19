@@ -1,16 +1,20 @@
 /* Zona 1: Importaciones*/
 
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, ScrollView } from 'react-native';
-import React,{useState} from 'react';
+import { StyleSheet, Text, View, Button, Switch } from 'react-native';
+import { useState } from 'react';
 
 const Texto = ({style}) => {
-  const [contenido,setContenido] = useState('Hola Mundo React Native');
-  const actualizarTexto = () => {setContenido('Estado actualizado del text');}
-  return (
-    <Text style={[styles.text,style]} onPress={actualizarTexto}> {contenido} </Text>
-  );
+  const [contenido, setContenido] = useState('Hola Mundo RNative');
+  const actualizatexto = () => setContenido('Hola mundo como estas?');
+  return(
+    <View style={{margin: 10}}>
+    <Text style={[styles.text, style]}>{contenido}</Text>
+    <Button title='actualizartexto' onPress={actualizatexto} color="red"/>
+    </View>
+  )
 }
+
 
 const Botonazo = () => {
   const [texto, setTexto] = useState('No aprietes el botón');
@@ -23,37 +27,13 @@ const Botonazo = () => {
 /* Zona 2: Main*/
 export default function App() {
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
+    <View style={styles.container}>
       <Texto style={styles.red} />
       <Texto style={styles.blue} />
       <Texto style={styles.green} />
-      <Texto style={styles.red} />
-      <Texto style={styles.blue} />
-      <Texto style={styles.green} />
-      <Texto style={styles.red} />
-      <Texto style={styles.blue} />
-      <Texto style={styles.green} />
-      <Texto style={styles.red} />
-      <Texto style={styles.blue} />
-      <Texto style={styles.green} />
-      <Texto style={styles.red} />
-      <Texto style={styles.blue} />
-      <Texto style={styles.green} />
-      <Texto style={styles.red} />
-      <Texto style={styles.blue} />
-      <Texto style={styles.green} />
-      <Texto style={styles.red} />
-      <Texto style={styles.blue} />
-      <Texto style={styles.green} />
-      <Texto style={styles.red} />
-      <Texto style={styles.blue} />
-      <Texto style={styles.green} />
-      <Texto style={styles.red} />
-      <Texto style={styles.blue} />
-      <Texto style={styles.green} />
-      <Botonazo />
       <StatusBar style="auto" />
-    </ScrollView>
+      <Botonazo />
+    </View>
   );
 }
 
