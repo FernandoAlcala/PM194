@@ -1,34 +1,69 @@
 /* Zona 1: Importaciones*/
 
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Switch } from 'react-native';
+import { StyleSheet, Text, Button, TextInput, Alert, ScrollView } from 'react-native';
 import { useState } from 'react';
 
-const Interruptor = ()=> {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-  return (
-    <View style={styles.container}>
-        <Text style={styles.text}>
-          {isEnabled ? 'Activado' : 'Desactivado'}
-        </Text>
-        <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
-          value={isEnabled}
-        />
-    </View>
-  );
+/* Zona 2: Main*/
+export default function App() {
+  const [nombre, setNombre]= useState('');
+  const [password, setPassword]= useState('');
+  const [comments, setComments]= useState('');
+  const [age, setAge]= useState('');
+
+const showAlert = () => {
+  if (nombre.trim()=== '' || password.trim() === '' || age.trim() === '') {
+    window.alert('Por favor, completa todos los campos obligatorios.');
+  } else {
+    window.alert(`Nombre: ${nombre}\nContrasena: ${password}\nEdad: ${age}\nComentarios: ${comments}`);
+  }
 }
 
-export default function App() {
   return (
-    <View style={styles.container}>
-      <Interruptor />
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      
+      <Text style={styles.text}>Nombre:</Text>
+      <TextInput style={styles.input}
+        placeholder='Escribe tu nombre'
+        value={nombre}
+        onChangeText={setNombre}
+      />
+
+      <Text style={styles.text}>Contrasena</Text>
+      <TextInput style={styles.input}
+        placeholder='Escribe tu Contrasena'
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={true}
+      />
+
+      <Text style={styles.text}>Edad</Text>
+      <TextInput style={styles.input}
+        placeholder='Escribe tu Edad'
+        value={age}
+        onChangeText={setAge}
+        keyboardType="numeric"
+      />
+
+      <Text style={styles.text}>Comentarios multilinea</Text>
+      <TextInput style={[styles.input, {height: 100, textAlignVertical: 'top'}]}
+        placeholder='Escribe tus comentarios'
+        value={comments}
+        onChangeText={setComments}
+        multiline={true}
+        numberOfLines={4}
+      />
+
+      <Text style={styles.text}>Campo de solo lectura</Text>
+      <TextInput style={styles.input}
+        value="Este campo es de solo lectura"
+        editable={false}
+      />
+      <Button title="Mostrar alerta" onPress={showAlert} />
+
+
+
+    </ScrollView>
   );
 }
 
@@ -46,6 +81,16 @@ const styles = StyleSheet.create({
     fontSize: 27,
     fontFamily: 'Comic Sans MS',
     textAlign: 'center',
+  },
+  input: {
+    width: 300,
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    fontSize: 18,
+    backgroundColor: '#f9f9f9',
   },
   red:{backgroundColor: 'red',},
   blue:{backgroundColor: 'blue',},
