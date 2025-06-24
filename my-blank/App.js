@@ -1,5 +1,5 @@
 /* Zona 1: Importaciones*/
-import { StyleSheet, View, Text, Button, TextInput, Alert, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Button, TextInput, Alert, ScrollView, ImageBackground} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -7,27 +7,51 @@ SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [splash, setSplash] = useState(false);
-  
+
   useEffect(() => {
-    setTimeout(async() => {
+    setTimeout(async () => {
       setSplash(true);
       await SplashScreen.hideAsync();
     }, 2000);
   }, []);
-}    
 
+  return (
+    <View style={{ flex: 1 }}>
+      <ImageBackground
+        source={require('./assets/20230101_000907A.jpg')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
+          <Text style={styles.red}>Bienvenido a mi App</Text>
+          <Text style={styles.blue}>
+            {splash ? 'Carga completa' : 'Cargando...'}
+          </Text>
+        </View>
+      </ImageBackground>
+    </View>
+  );
+}
 
 /* Zona 3: Estética*/
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center', // Centra horizontalmente
-    justifyContent: 'flex-start', // Arriba
-    paddingTop: 40, // Espacio desde arriba (ajusta según necesidad)
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  text:{
-    color:'black',
+  overlay: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 40,
+    backgroundColor: 'rgba(255,255,255,0.0)', // transparente
+  },
+  text: {
+    color: 'black',
     fontSize: 27,
     fontFamily: 'Comic Sans MS',
     textAlign: 'center',
@@ -42,7 +66,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     backgroundColor: '#f9f9f9',
   },
-  red:{backgroundColor: 'red',},
-  blue:{backgroundColor: 'blue',},
-  green:{backgroundColor: 'green',},
+  red: { backgroundColor: 'red' },
+  blue: { backgroundColor: 'blue' },
+  green: { backgroundColor: 'green' },
 });
