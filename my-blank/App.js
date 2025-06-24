@@ -1,71 +1,21 @@
 /* Zona 1: Importaciones*/
+import { StyleSheet, View, Text, Button, TextInput, Alert, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
 
-import { StyleSheet, Text, Button, TextInput, Alert, ScrollView } from 'react-native';
-import { useState } from 'react';
+SplashScreen.preventAutoHideAsync();
 
-
-/* Zona 2: Main*/
 export default function App() {
-  const [nombre, setNombre]= useState('');
-  const [password, setPassword]= useState('');
-  const [comments, setComments]= useState('');
-  const [age, setAge]= useState('');
+  const [splash, setSplash] = useState(false);
+  
+  useEffect(() => {
+    setTimeout(async() => {
+      setSplash(true);
+      await SplashScreen.hideAsync();
+    }, 2000);
+  }, []);
+}    
 
-const showAlert = () => {
-  if (nombre.trim()=== '' || password.trim() === '' || age.trim() === '') {
-    window.alert('Por favor, completa todos los campos obligatorios.');
-  } else {
-    window.alert(`Nombre: ${nombre}\nContrasena: ${password}\nEdad: ${age}\nComentarios: ${comments}`);
-  }
-}
-
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      
-      <Text style={styles.text}>Nombre:</Text>
-      <TextInput style={styles.input}
-        placeholder='Escribe tu nombre'
-        value={nombre}
-        onChangeText={setNombre}
-      />
-
-      <Text style={styles.text}>Contrasena</Text>
-      <TextInput style={styles.input}
-        placeholder='Escribe tu Contrasena'
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
-
-      <Text style={styles.text}>Edad</Text>
-      <TextInput style={styles.input}
-        placeholder='Escribe tu Edad'
-        value={age}
-        onChangeText={setAge}
-        keyboardType="numeric"
-      />
-
-      <Text style={styles.text}>Comentarios multilinea</Text>
-      <TextInput style={[styles.input, {height: 100, textAlignVertical: 'top'}]}
-        placeholder='Escribe tus comentarios'
-        value={comments}
-        onChangeText={setComments}
-        multiline={true}
-        numberOfLines={4}
-      />
-
-      <Text style={styles.text}>Campo de solo lectura</Text>
-      <TextInput style={styles.input}
-        value="Este campo es de solo lectura"
-        editable={false}
-      />
-      <Button title="Mostrar alerta" onPress={showAlert} />
-
-
-
-    </ScrollView>
-  );
-}
 
 /* Zona 3: Estética*/
 const styles = StyleSheet.create({
