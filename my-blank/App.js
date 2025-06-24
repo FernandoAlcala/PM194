@@ -1,6 +1,6 @@
 /* Zona 1: Importaciones*/
-import { StyleSheet, View, Text, Button, TextInput, Alert, ScrollView, ImageBackground} from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, ImageBackground } from 'react-native';
+import { useState, useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 
 SplashScreen.preventAutoHideAsync();
