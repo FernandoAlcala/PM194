@@ -1,15 +1,36 @@
 /* Zona 1: Importaciones*/
-import { StyleSheet, View, Text, ImageBackground, ScrollView, ActivityIndicator} from 'react-native';
-import { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, Button } from 'react-native';
+import { useState } from 'react';
+import { ActivityIndicator } from 'react-native-web';
 
 export default function App() {
+  const [loading, setLoading] = useState(false);
+  const [mensaje, setMensaje] = useState('');
+
+  const simularCarga = () => {
+      setLoading(true);
+      setMensaje('');
+      setTimeout(() => {
+        setLoading(false);
+        setMensaje('Carga completa');
+      }, 3000);
+  }
+
   return (
-    <ScrollView 
-    contentContainerStyle={styles.text} 
-    showsVerticalScrollIndicator={false}>
-      <Text>Hola Mundo</Text>
-      
-    </ScrollView>
+      <View style={styles.background}>
+        <Text style={styles.text}>Carga</Text>
+        {loading ? (
+          <>
+            <ActivityIndicator size="large" color="#2D9CDB" />
+            <Text style={styles.text}>Cargando...</Text>
+          </>
+        ) : (
+          <>
+            <Button title="Simular Carga" onPress={simularCarga} />
+            {mensaje !== '' && <Text style={styles.text}>{mensaje}</Text>}
+          </>
+        )}
+      </View>
   )
 }
 
@@ -28,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 40,
-    backgroundColor: 'rgba(255,255,255,0.0)',
+    backgroundColor: 'rgba(255,255,255,0.0)', 
   },
   text: {
     color: 'black',
