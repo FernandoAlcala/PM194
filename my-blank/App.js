@@ -1,73 +1,94 @@
 /* Zona 1: Importaciones*/
-import { StyleSheet, View, Text, Button } from 'react-native';
-import { useState } from 'react';
+import { SafeAreaView, StyleSheet, View, Text, Button, FlatList, SectionList } from 'react-native';
+import { use, useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native-web';
 
 export default function App() {
-  const [loading, setLoading] = useState(false);
-  const [mensaje, setMensaje] = useState('');
+  const [frutas, setFrutas] = useState([]);
+  const [verduras, setVerduras] = useState([]);
+  const [loading, setLoading] = useState([]);
+  const API_URL = "http://127.0.0.1:8000/productos/";
 
-  const simularCarga = () => {
-      setLoading(true);
-      setMensaje('');
-      setTimeout(() => {
-        setLoading(false);
-        setMensaje('Carga completa');
-      }, 3000);
+  useEffect(() => {
+    fetch(API_URL)
+    .then((res) => res.json())
+    .then((data) => {
+      setFrutas(data.frutas);
+      setVerduras(data.verduras);
+    })
+    .catch((error) => console.error(error))
+    .finally(() => setLoading(false));
+  }, []);
+
+  // Render Item para FlatList y SectionList
+  const renderItem = ({ item }) => (
+    <View style={ styles.item }>
+      <Text style={styles.text}>{item.nombre}</Text>
+    </View>
+  );
+
+  const sections = [
+    { title: 'Frutas', data: frutas },
+    { title: 'Verduras', data: verduras },
+  ];
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Cargando datos</Text>
+      </SafeAreaView>
+    );
   }
 
   return (
-      <View style={styles.background}>
-        <Text style={styles.text}>Carga</Text>
-        {loading ? (
-          <>
-            <ActivityIndicator size="large" color="#2D9CDB" />
-            <Text style={styles.text}>Cargando...</Text>
-          </>
-        ) : (
-          <>
-            <Button title="Simular Carga" onPress={simularCarga} />
-            {mensaje !== '' && <Text style={styles.text}>{mensaje}</Text>}
-          </>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Lista de Frutas (FlatList)</Text>
+        <FlatList
+          data={frutas}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+        />
+      <Text style={styles.title}>Frutas y Verduras (SectionList)</Text>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={styles.header}>{title}</Text>
         )}
-      </View>
-  )
+      />
+    </SafeAreaView>
+  );
 }
 
 /* Zona 3: Estética*/
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: 30,
+    paddingHorizontal: 16,
   },
-  overlay: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: 40,
-    backgroundColor: 'rgba(255,255,255,0.0)', 
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginVertical: 12,
   },
-  text: {
-    color: 'black',
-    fontSize: 27,
-    fontFamily: 'Comic Sans MS',
-    textAlign: 'center',
-  },
-  input: {
-    width: 300,
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 15,
+  header: {
+    fontSize: 20,
+    fontWeight: "bold",
+    backgroundColor: "#ddd",
+    paddingVertical: 4,
     paddingHorizontal: 10,
-    fontSize: 18,
-    backgroundColor: '#f9f9f9',
+    marginTop: 10,
   },
-  red: { backgroundColor: 'red' },
-  blue: { backgroundColor: 'blue' },
-  green: { backgroundColor: 'green' },
+  item: {
+    backgroundColor: "#f9c2ff",
+    padding: 10,
+    marginVertical: 4,
+    borderRadius: 5,
+  },
+  nombre: {
+    fontSize:18,
+  },
 });
