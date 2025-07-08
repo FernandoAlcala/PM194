@@ -1,206 +1,114 @@
-/* Zona 1: Importaciones*/
-import { StyleSheet, View, Text, ImageBackground, TextInput, Switch, TouchableOpacity, Modal  } from 'react-native';
-import { useState, useEffect} from 'react';
-import * as SplashScreen from 'expo-splash-screen';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SectionList,
+  ActivityIndicator,
+  ScrollView,
+  Button,
+  SafeAreaView,
+  Alert,
+} from 'react-native';
+import BookItem from './components/BookItem';
+import fetchBooks from './utils/fetchBooks';
 
-SplashScreen.preventAutoHideAsync();
+const CATEGORIES = [
+  'Ficción',
+  'Historia',
+  'Tecnología',
+  'Música',
+  'Cómics',
+];
+
 
 export default function App() {
-  const [splash, setSplash] = useState(false);
-  
-  useEffect(() => {
-    setTimeout(async () => {
-      setSplash(true);
-      await SplashScreen.hideAsync();
-    }, 2000);
-  }, []);
+  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [sections, setSections] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [nombre, setNombre] = useState('');
-  const [correo, setCorreo] = useState('');
-  const [aceptaTerminos, setAceptaTerminos] = useState(false);
-  
-  // Estados para el alert personalizado
-  const [alertVisible, setAlertVisible] = useState(false);
-  const [alertTitle, setAlertTitle] = useState('');
-  const [alertMessage, setAlertMessage] = useState('');
-
-  // Función para mostrar alert personalizado
-  const showCustomAlert = (title, message) => {
-    setAlertTitle(title);
-    setAlertMessage(message);
-    setAlertVisible(true);
-  };
-
-  // Función para validar email
-  const validarEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
-  };
-
-  const handleRegistro = () => {
-    if (!nombre.trim() || !correo.trim()) {
-      showCustomAlert('Error', 'Por favor, completa todos los campos.');
-    } else if (!validarEmail(correo.trim())) {
-      showCustomAlert('Error', 'Por favor, ingresa un correo electrónico válido.');
-    } else {
-      if (!aceptaTerminos) {
-        showCustomAlert('Error', 'Debes aceptar términos y condiciones.');
-      } else {
-        showCustomAlert(
-          'Registro exitoso',
-          `Nombre: ${nombre}\nCorreo: ${correo}`
-        );
-      }
+  const loadBooks = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const books = await fetchBooks(category);
+      const grouped = groupByAuthor(books);
+      const sectionData = Object.keys(grouped).map(author => ({
+        title: author,
+        data: grouped[author],
+      }));
+      setSections(sectionData);
+    } catch (err) {
+      setError('No se pudo obtener los libros. Intenta nuevamente.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <View style={{ flex: 1 }}>
-      <ImageBackground
-        source={require('./assets/20230101_000907A.jpg')}
-        style={styles.background}
-        resizeMode="cover"
-      >
-        <View style={styles.overlay}>
-          <TextInput
-            style={styles.input}
-            placeholder="Nombre completo"
-            value={nombre}
-            onChangeText={setNombre}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Correo electrónico"
-            value={correo}
-            onChangeText={setCorreo}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <View style={styles.switchContainer}>
-            <Switch
-              value={aceptaTerminos}
-              onValueChange={setAceptaTerminos}
-            />
-            <Text style={styles.switchLabel}>Aceptar términos y condiciones</Text>
-          </View>
-          
-          {/* Botón personalizado que SÍ funciona */}
-          <TouchableOpacity style={styles.registerButton} onPress={handleRegistro}>
-            <Text style={styles.registerButtonText}>Registrarse</Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
+  useEffect(() => {
+    loadBooks();
+  }, [category]);
 
-      {/* Alert personalizado usando Modal */}
-      <Modal
-        transparent={true}
-        visible={alertVisible}
-        animationType="fade"
-        onRequestClose={() => setAlertVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.alertContainer}>
-            <Text style={styles.alertTitle}>{alertTitle}</Text>
-            <Text style={styles.alertMessage}>{alertMessage}</Text>
-            <TouchableOpacity 
-              style={styles.alertButton} 
-              onPress={() => setAlertVisible(false)}
-            >
-              <Text style={styles.alertButtonText}>OK</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    </View>
+  const groupByAuthor = (books) => {
+    const grouped = {};
+    books.forEach((book) => {
+      const authors = book.volumeInfo.authors || ['Autor desconocido'];
+      authors.forEach(author => {
+        if (!grouped[author]) grouped[author] = [];
+        grouped[author].push(book);
+      });
+    });
+    return grouped;
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.buttonContainer}>
+        {CATEGORIES.map(cat => (
+          <Button
+            key={cat}
+            title={cat}
+            onPress={() => setCategory(cat)}
+            color={cat === category ? '#2196f3' : '#ccc'}
+          />
+        ))}
+      </View>
+
+      {loading && <ActivityIndicator size="large" color="#0000ff" />}
+      {error && <Text style={styles.error}>{error}</Text>}
+
+      {!loading && !error && (
+        <SectionList
+          sections={sections}
+          keyExtractor={(item, index) => item.id + index}
+          renderItem={({ item }) => <BookItem book={item} />}
+          renderSectionHeader={({ section: { title } }) => (
+            <Text style={styles.sectionHeader}>{title}</Text>
+          )}
+          ListEmptyComponent={<Text>No se encontraron libros.</Text>}
+        />
+      )}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    justifyContent: 'center',
+  container: { flex: 1, paddingTop: 40 },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    backgroundColor: '#f2f2f2',
+    padding: 8,
   },
-  overlay: {
-    backgroundColor: 'white',
-    margin: 20,
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  red: {
-    color: 'red',
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    borderColor: '#aaa',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginVertical: 8,
-    backgroundColor: '#fff',
-  },
-  switchContainer: {
+  buttonContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  switchLabel: {
-    marginLeft: 10,
-    fontSize: 16,
-  },
-  registerButton: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 8,
-    width: '100%',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  registerButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  // Estilos para el alert personalizado
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  alertContainer: {
-    backgroundColor: 'white',
-    margin: 20,
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    minWidth: 280,
-  },
-  alertTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    justifyContent: 'space-around',
     marginBottom: 10,
+  },
+  error: {
+    color: 'red',
     textAlign: 'center',
-    color: '#333',
-  },
-  alertMessage: {
-    fontSize: 16,
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#666',
-    lineHeight: 22,
-  },
-  alertButton: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  alertButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    margin: 10,
   },
 });
